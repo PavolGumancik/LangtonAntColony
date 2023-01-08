@@ -9,14 +9,11 @@ using std::endl;
 //+ creation of array of flags
 //DIRECTIONS: 1 = UP, 2 = DOWN, 3 = LEFT, 4 = RIGHT
 Board::Board(int x, int y, int logic, int totalAnts, pthread_mutex_t *mutexT, pthread_cond_t *condAnts)
-    :collisionLogic(logic), numberOfAnts(totalAnts)
+    :collisionLogic(logic), numberOfAnts(totalAnts), rowSize(x), colSize(y)
 {
+    //type of logic - decision at collision
     //1 = extinction; 2 = solely survivor; 3 = add-on logic (inverse logic)
-    /*const int collisionLogic = logic;
-    const int numberOfAnts = totalAnts;*/
-    int rowSize = x;
-    int colSize = y;
-	
+    
 	pthread_mutex_t* mutex = mutexT;
 	pthread_cond_t* cond_ants = condAnts;
 
@@ -28,7 +25,6 @@ Board::Board(int x, int y, int logic, int totalAnts, pthread_mutex_t *mutexT, pt
 //returns column size
 int Board::getColSize()
 {
-    cout << colSize << endl;
     return colSize;
 }
 
@@ -98,4 +94,24 @@ void Board::startupSet()
             }
         }
     }
+}
+
+int Board::getLogic()
+{
+    return Board::collisionLogic;
+}
+
+int Board::getNumOfAnts()
+{
+    return Board::numberOfAnts;
+}
+
+bool Board::getChange(int xcoord, int ycoord, int idAnt)
+{
+    return changeBoard[xcoord][ycoord][idAnt];
+}
+
+void Board::setChange(int xcoord, int ycoord, int idAnt)
+{
+    changeBoard[xcoord][ycoord][idAnt] = true;
 }

@@ -88,6 +88,9 @@
     <ClInclude Include="integerCheck.h" />
     <ClInclude Include="outputManager.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="antPattern.txt" />
+  </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

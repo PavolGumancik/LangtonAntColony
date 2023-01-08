@@ -26,4 +26,9 @@ public:
     char getColor(int, int);
     void changeColor(int, int);
     bool isWall(int, int);
+	int getLogic();
+	int getNumOfAnts();
+	bool getChange(int, int, int);
+	void setChange(int, int, int);
+
 };

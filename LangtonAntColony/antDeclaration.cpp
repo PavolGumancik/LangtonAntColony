@@ -85,21 +85,39 @@ int main()
 	int collisionType1 = (int)collisionType;
 	int numberOfAnts1 = (int)numberOfAnts;
 
+	//DEBUG DELETE
+	/*cout << "row: " << rsize1 << endl;
+	cout << "Col: " << csize1 << endl;
+	cout << "logic: " << collisionType1 << endl;
+	cout << "ants: " << numberOfAnts1 << endl;*/
+
 	//remember to free allocated space
-	Board *boardData = new Board(rsize1, csize1, collisionType1, numberOfAnts1, &mutex, &cond_ants);
+	Board boardData = Board((int)rsize1, csize1, collisionType1, numberOfAnts1, &mutex, &cond_ants);
 
-	
+	//DEBUG DO NOT FORGET COMMENT
+	//cout << "Board has been created:"; cout << endl;
+	//printCmd(&boardData);
+	/*cout << "Col size: " << boardData.getColSize() << endl;
+	cout << "Row size: " << boardData.getRowSize() << endl;
+	cout << "Change: " << boardData.getChange(0,0,0) << endl;
+	cout << "Logic: " << boardData.getLogic() << endl;
+	cout << "Num of ants: " << boardData.getNumOfAnts() << endl;*/
+	//DEBUG DO NOT FORGET COMMENT
+	boardData.startupSet();
+	cout << "Board has been set!"; cout << endl;
+	printCmd(&boardData);
+	cout << "Board has been on std::out!"; cout << endl;
 
 
-	//for (int i = 0; i < numberOfAnts; ++i) {
-	//	pthread_create(&ants[i], NULL, &antMove, &boardData);
-	//}
+	for (int i = 0; i < numberofants; ++i) {
+		pthread_create(&ants[i], null, &antmove, &boardData);
+	}
 
-	//for (int i = 0; i < numberOfAnts; ++i) {
-	//	pthread_join(ants[i], NULL);
-	//}
+	for (int i = 0; i < numberofants; ++i) {
+		pthread_join(ants[i], null);
+	}
 
 	pthread_mutex_destroy(&mutex);
 	pthread_cond_destroy(&cond_ants);
-	delete boardData;
+	//delete boardData;
 }
