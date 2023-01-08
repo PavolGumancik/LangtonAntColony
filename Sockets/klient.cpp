@@ -81,7 +81,7 @@ int klient(int argc, char *argv[])
 
     //v hlavnom vlakne sa bude vykonavat citanie dat zo socketu
     data_readData((void *)&data);
-
+    da
     //pockame na skoncenie zapisovacieho vlakna <pthread.h>
     pthread_join(thread, NULL);
     data_destroy(&data);

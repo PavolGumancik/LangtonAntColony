@@ -39,9 +39,7 @@ int data_isStopped(DATA *data) {
     pthread_mutex_unlock(&data->mutex);
     return stop;
 }
-void saveFromFile(void *data){
 
-}
 void *data_readData(void *data) {
     DATA *pdata = (DATA *)data;
     char buffer[BUFFER_LENGTH + 1];
@@ -74,6 +72,18 @@ void *data_readData(void *data) {
 
     return NULL;
 }
+void data_download(DATA *data) {
+    pthread_mutex_lock(&data->mutex);
+
+    pthread_mutex_unlock(&data->mutex);
+}
+
+void data_upload(DATA *data) {
+    ifstream myfile;
+    pthread_mutex_lock(&data->mutex);
+
+    pthread_mutex_unlock(&data->mutex);
+}
 
 void *data_writeData(void *data) {
     DATA *pdata = (DATA *)data;
@@ -104,6 +114,12 @@ void *data_writeData(void *data) {
                 if (strstr(textStart, endMsg) == textStart && strlen(textStart) == strlen(endMsg)) {
                     printf("Koniec komunikacie.\n");
                     data_stop(pdata);
+                } else if (strstr(textStart, saveMsg) == textStart && strlen(textStart) == strlen(saveMsg)) {
+                    printf("Nahranie suboru.\n");
+                    data_upload(pdata);
+                } else if (strstr(textStart, downloadMsg) == textStart && strlen(textStart) == strlen(downloadMsg)) {
+                    printf("Stiahnutie suboru.\n");
+                    data_download(pdata);
                 }
             }
         }

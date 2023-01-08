@@ -35,6 +35,7 @@ void fileOutput(Board* b)
 	int colSize = b->getColSize();
 
 	ofstream myfile;
+
 	myfile.open("antPattern.txt");
 	for (int i = 0; i < rowSize; i++)
 	{

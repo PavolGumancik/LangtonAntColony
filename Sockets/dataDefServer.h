@@ -1,25 +1,22 @@
 //
-// Created by luka3 on 6. 1. 2023.
+// Created by luka3 on 8. 1. 2023.
 //
 
-#ifndef KLIENTSERVER_DATADEF_H
-#define KLIENTSERVER_DATADEF_H
-#include <pthread.h>
-
+#ifndef LANGTONANTCOLONY_DATADEFSERVER_H
+#define LANGTONANTCOLONY_DATADEFSERVER_H
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-#define USER_LENGTH 10
-#define BUFFER_LENGTH 300
+#define USER_LENGTH 360//maximalny pocet policok
+#define BUFFER_LENGTH 10
 extern char *endMsg;
 
 typedef struct data {
-    char userName[USER_LENGTH + 1];
+    char pole[USER_LENGTH + 1];
     pthread_mutex_t mutex;
     int socket;
     int stop;
-    char pole[USER_LENGTH + 1]
 } DATA;
 typedef struct serverData {
 
@@ -35,5 +32,4 @@ void printError(char *str);
 
 #ifdef	__cplusplus
 }
-#endif
-#endif //KLIENTSERVER_DATADEF_H
+#endif //LANGTONANTCOLONY_DATADEFSERVER_H
