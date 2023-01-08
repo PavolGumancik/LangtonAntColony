@@ -88,15 +88,7 @@ int main()
 	//remember to free allocated space
 	Board *boardData = new Board(rsize1, csize1, collisionType1, numberOfAnts1, &mutex, &cond_ants);
 
-	//DEBUG DO NOT FORGET COMMENT
-	cout << "Board has been created:"; cout << endl;
-	printCmd(boardData);
-	cout << "Col size: " << boardData->getColSize() << endl;
-	//DEBUG DO NOT FORGET COMMENT
-	boardData->startupSet();
-	cout << "Board has been set!"; cout << endl;
-	printCmd(boardData);
-	cout << "Board has been on std::out!"; cout << endl;
+	
 
 
 	//for (int i = 0; i < numberOfAnts; ++i) {
