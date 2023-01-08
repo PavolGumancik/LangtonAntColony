@@ -77,13 +77,16 @@
   <ItemGroup>
     <ClCompile Include="antDeclaration.cpp" />
     <ClCompile Include="ant.cpp" />
+    <ClCompile Include="board.cpp" />
     <ClCompile Include="integerCheck.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="titleStruct.h" />
+    <ClCompile Include="outputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ant.h" />
+    <ClInclude Include="board.h" />
     <ClInclude Include="integerCheck.h" />
+    <ClInclude Include="outputManager.h" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

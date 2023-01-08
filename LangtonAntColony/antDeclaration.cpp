@@ -1,7 +1,10 @@
 #include <iostream>
 #include "integerCheck.h"
-#include "titleStruct.h"
-#include "integerCheck.cpp"
+#include "board.h"
+#include "ant.h"
+#include"outputManager.h"
+#include <pthread.h>
+#include <unistd.h>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -45,7 +48,7 @@ int main()
 	numberOfAnts = getUnsignedInt();
 	//the user has to enter at least 2 columns and at most
 	//80 columns
-	while (!(isRange(csize, 20, 1)))
+	while (!(isRange(numberOfAnts, 20, 1)))
 	{
 		cout << "Error. Out of range." << endl;
 		cout << "Please enter a positive integer from 1 to 20." << endl;
@@ -58,16 +61,17 @@ int main()
 	collisionType = getUnsignedInt();
 	//the user has to enter at least 2 columns and at most
 	//80 columns
-	while (!(isRange(csize, 3, 1)))
+	while (!(isRange(collisionType, 3, 1)))
 	{
 		cout << "Error. Out of range." << endl;
 		cout << "Please enter a positive integer from 1 to 3." << endl;
 		collisionType = getUnsignedInt();
 	}
 
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////	THREADING	/////////////////////////////////////////////////////////
-	TitleBoard data= {};
+
 	pthread_mutex_t  mutex;
 	pthread_cond_t  cond_ants;
 
@@ -76,14 +80,34 @@ int main()
 
 	pthread_t ants[numberOfAnts];
 
-	for (int i = 0; i < numberOfAnts; ++i) {
-		pthread_create(&ants[i], NULL, &antColony, &data);
-	}
+	int rsize1 = (int)rsize;
+	int csize1 = (int)csize;
+	int collisionType1 = (int)collisionType;
+	int numberOfAnts1 = (int)numberOfAnts;
 
-	for (int i = 0; i < numberOfAnts; ++i) {
-		pthread_join(ants[i], NULL);
-	}
+	//remember to free allocated space
+	Board *boardData = new Board(rsize1, csize1, collisionType1, numberOfAnts1, &mutex, &cond_ants);
+
+	//DEBUG DO NOT FORGET COMMENT
+	cout << "Board has been created:"; cout << endl;
+	printCmd(boardData);
+	cout << "Col size: " << boardData->getColSize() << endl;
+	//DEBUG DO NOT FORGET COMMENT
+	boardData->startupSet();
+	cout << "Board has been set!"; cout << endl;
+	printCmd(boardData);
+	cout << "Board has been on std::out!"; cout << endl;
+
+
+	//for (int i = 0; i < numberOfAnts; ++i) {
+	//	pthread_create(&ants[i], NULL, &antMove, &boardData);
+	//}
+
+	//for (int i = 0; i < numberOfAnts; ++i) {
+	//	pthread_join(ants[i], NULL);
+	//}
 
 	pthread_mutex_destroy(&mutex);
 	pthread_cond_destroy(&cond_ants);
+	delete boardData;
 }
