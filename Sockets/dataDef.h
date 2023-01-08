@@ -10,26 +10,25 @@
 extern "C" {
 #endif
 
-#define USER_LENGTH 10
+#define USER_LENGTH 380//maximalny pocet policok + 20 znakov na nove riadky
 #define BUFFER_LENGTH 300
+
 extern char *endMsg;
 
 typedef struct data {
-    char userName[USER_LENGTH + 1];
+    //treba urobit pole s ulozenimy subormi
     pthread_mutex_t mutex;
     int socket;
     int stop;
-    char pole[USER_LENGTH + 1]
 } DATA;
-typedef struct serverData {
 
-} SERVERDATA;
 void data_init(DATA *data, const int socket);
 void data_destroy(DATA *data);
 void data_stop(DATA *data);
 int data_isStopped(DATA *data);
 void *data_readData(void *data);
 void *data_writeData(void *data);
+bool data_upload_client(DATA *data);
 
 void printError(char *str);
 

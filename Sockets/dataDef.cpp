@@ -7,10 +7,11 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <iostream>
+#include <fstream>
 
 char *endMsg = ":end";
 char *saveMsg = ":save";
-char *downloadMsg =":download";
 char *fileName = "antPattern.txt";
 
 //void data_init(DATA *data, const char* userName, const int socket) {
@@ -23,6 +24,8 @@ void data_init(DATA *data, const int socket) {
 }
 
 void data_destroy(DATA *data) {
+
+
     pthread_mutex_destroy(&data->mutex);
 }
 
@@ -39,9 +42,7 @@ int data_isStopped(DATA *data) {
     pthread_mutex_unlock(&data->mutex);
     return stop;
 }
-void saveFromFile(void *data){
-
-}
+//toto robi server
 void *data_readData(void *data) {
     DATA *pdata = (DATA *)data;
     char buffer[BUFFER_LENGTH + 1];
@@ -52,19 +53,19 @@ void *data_readData(void *data) {
             char *posSemi = strchr(buffer, ':');
             char *pos = strstr(posSemi + 1, endMsg);
 
-            //co sa
+
             if (pos != NULL && pos - posSemi == 2 && *(pos + strlen(endMsg)) == '\0') {
                 *(pos - 2) = '\0';
-                printf("Pouzivatel %s ukoncil komunikaciu.\n", buffer);
+                printf("Pouzivatel ukoncil spojenie.\n", buffer);
                 data_stop(pdata);
             } else if (pos != NULL && pos - posSemi == 2 && *(pos + strlen(saveMsg)) == '\0') {
                 *(pos - 2) = '\0';
-                printf("Pouzivatel %s chce ulozit obraz.\n", buffer);
-            } else if (pos != NULL && pos - posSemi == 2 && *(pos + strlen(download)) == '\0') {
-                *(pos - 2) = '\0';
-                printf("Pouzivatel %s chce stiahnut obraz.\n", buffer);
+                printf("Pouzivatel chce ulozit obraz.\n", buffer);
+                std::ofstream novySubor("serverData.txt");
+                novySubor << buffer;
             } else {
-                printf("%s\n", buffer);
+                std::ofstream novySubor("serverData.txt");
+                novySubor << buffer;
             }
         }
         else {
@@ -75,11 +76,33 @@ void *data_readData(void *data) {
     return NULL;
 }
 
+bool data_upload_client(DATA *data) {
+    //citanie zo suboru a zapis do char
+    char buffer[BUFFER_LENGTH + 1];
+    buffer[BUFFER_LENGTH] = '\0';
+    std::ifstream subor;
+    subor.open(fileName);
+    if (subor.is_open()) {
+        std::string input;
+        while (!subor.eof()) {
+            std::string tmp;
+            std::getline(subor, tmp);
+            input += tmp;
+        }
+        snprintf(buffer, BUFFER_LENGTH, "%s" ,input.c_str());
+        pthread_mutex_lock(&data->mutex);
+        write(data->socket, buffer, strlen(buffer)+1);
+        pthread_mutex_unlock(&data->mutex);
+    } else {
+        printf("Subor sa nenasiel.\n");
+    }
+    subor.close();
+}
+//toto posiela uzivatel
 void *data_writeData(void *data) {
     DATA *pdata = (DATA *)data;
     char buffer[BUFFER_LENGTH + 1];
     buffer[BUFFER_LENGTH] = '\0';
-    int userNameLength = strlen(pdata->userName);
 
     //pre pripad, ze chceme poslat viac dat, ako je kapacita buffra
     fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL, 0) | O_NONBLOCK);
@@ -92,9 +115,9 @@ void *data_writeData(void *data) {
         FD_SET(STDIN_FILENO, &inputs);
         select(STDIN_FILENO + 1, &inputs, NULL, NULL, &tv);
         if (FD_ISSET(STDIN_FILENO, &inputs)) {
-            sprintf(buffer, "%s: ", pdata->userName);
-            char *textStart = buffer + (userNameLength + 2);
-            while (fgets(textStart, BUFFER_LENGTH - (userNameLength + 2), stdin) > 0) {
+
+            char *textStart = buffer;
+            while (fgets(textStart, BUFFER_LENGTH , stdin) != nullptr) {
                 char *pos = strchr(textStart, '\n');
                 if (pos != NULL) {
                     *pos = '\0';
@@ -104,6 +127,12 @@ void *data_writeData(void *data) {
                 if (strstr(textStart, endMsg) == textStart && strlen(textStart) == strlen(endMsg)) {
                     printf("Koniec komunikacie.\n");
                     data_stop(pdata);
+                } else if (strstr(textStart, saveMsg) == textStart && strlen(textStart) == strlen(saveMsg)) {
+                    printf("Nahranie suboru.\n");
+                    if (data_upload_client(pdata)) {
+                        printf("Subor úspešne.\n");
+                    };
+
                 }
             }
         }

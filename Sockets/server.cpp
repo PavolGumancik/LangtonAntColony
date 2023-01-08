@@ -51,21 +51,23 @@ int server(int argc, char *argv[])
         return 3;
     }
     */
-    while ((newsockfd = accept(sockfd, (struct sockaddr*)&cli_addr, &cli_len) != -1))
+    if ((newsockfd = accept(sockfd, (struct sockaddr*)&cli_addr, &cli_len) == -1))
     {
-        pthread_create(&client_threadid,NULL,handle_connection,&client_sock);
-        DATA data;
-        data_init(&data, newsockfd);
-        //vytvorenie vlakna pre zapisovanie dat do socketu <pthread.h>
-        pthread_t thread;
-        pthread_create(&thread, NULL, data_writeData, (void *)&data);
-        //v hlavnom vlakne sa bude vykonavat citanie dat zo socketu
-        data_readData((void *)&data);
-
-        //pockame na skoncenie zapisovacieho vlakna <pthread.h>
-        pthread_join(thread, NULL);
-        data_destroy(&data); //toto si nie som istý
+        perror("Socket error");
+        return 3;
     }
+    //pthread_create(&client_threadid,NULL,handle_connection,&client_sock);
+    DATA data;
+    data_init(&data, newsockfd);
+    //vytvorenie vlakna pre zapisovanie dat do socketu <pthread.h>
+    pthread_t thread;
+    pthread_create(&thread, NULL, data_writeData, (void *)&data);
+    //v hlavnom vlakne sa bude vykonavat citanie dat zo socketu
+    data_readData((void *)&data);
+
+    //pockame na skoncenie zapisovacieho vlakna <pthread.h>
+    pthread_join(thread, NULL);
+    data_destroy(&data); //toto si nie som istý
     //inicializacia dat zdielanych medzi vlaknami
     //bzero(buffer,256); //o 1 vacsie aby spravne to bolo ukoncene dakou nulov
     //n = read(newsockfd, buffer, 255); //citanie vstupu od klienta cez buffer
