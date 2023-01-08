@@ -14,7 +14,7 @@ int main()
 	//int variables to hold the user entered row size
 	//column size, the x coord of the ant and
 	//the y coord of the ant
-	int numberOfAnts, rsize, csize, collisionType, logic;
+	int numberOfAnts, rsize, csize, collisionType;
 
 	cout << "Please enter a positive integer from 2 to 80"
 		" - will be used for the row size." << endl;
@@ -80,10 +80,11 @@ int main()
 
 	pthread_t ants[numberOfAnts];
 
-	int rsize1 = (int)rsize;
+	//type to int from unsigned int
+	/*int rsize1 = (int)rsize;
 	int csize1 = (int)csize;
 	int collisionType1 = (int)collisionType;
-	int numberOfAnts1 = (int)numberOfAnts;
+	int numberOfAnts1 = (int)numberOfAnts;*/
 
 	//DEBUG DELETE
 	/*cout << "row: " << rsize1 << endl;
@@ -92,7 +93,7 @@ int main()
 	cout << "ants: " << numberOfAnts1 << endl;*/
 
 	//remember to free allocated space
-	Board boardData = Board((int)rsize1, csize1, collisionType1, numberOfAnts1, &mutex, &cond_ants);
+	Board boardData = Board((int)rsize, (int)csize, (int)collisionType, (int)numberOfAnts, &mutex, &cond_ants);
 
 	//DEBUG DO NOT FORGET COMMENT
 	//cout << "Board has been created:"; cout << endl;
@@ -104,20 +105,20 @@ int main()
 	cout << "Num of ants: " << boardData.getNumOfAnts() << endl;*/
 	//DEBUG DO NOT FORGET COMMENT
 	boardData.startupSet();
-	cout << "Board has been set!"; cout << endl;
+	//cout << "Board has been set!"; cout << endl;
 	printCmd(&boardData);
-	cout << "Board has been on std::out!"; cout << endl;
+	//cout << "Board has been on std::out!"; cout << endl;
 
 
-	for (int i = 0; i < numberofants; ++i) {
-		pthread_create(&ants[i], null, &antmove, &boardData);
+	for (int i = 0; i < numberOfAnts; ++i) {
+		pthread_create(&ants[i], NULL, &logicMove, &boardData);
 	}
 
-	for (int i = 0; i < numberofants; ++i) {
-		pthread_join(ants[i], null);
+	for (int i = 0; i < numberOfAnts; ++i) {
+		pthread_join(ants[i], NULL);
 	}
 
 	pthread_mutex_destroy(&mutex);
 	pthread_cond_destroy(&cond_ants);
-	//delete boardData;
+	delete &boardData;
 }
