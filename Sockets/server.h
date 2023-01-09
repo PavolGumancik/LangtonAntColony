@@ -1,6 +1,7 @@
 //
 // Created by luka3 on 7. 12. 2022.
 //
+#include <pthread.h>
 #
 #ifndef KLIENTSERVER_SERVER_H
 #define KLIENTSERVER_SERVER_H

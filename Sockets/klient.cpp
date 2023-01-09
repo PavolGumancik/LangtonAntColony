@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include "dataDef.h"
+#include "klient.h"
 
 int klient(int argc, char *argv[])
 {
@@ -50,27 +52,7 @@ int klient(int argc, char *argv[])
         perror("Error connecting to socket");
         return 4;
     }
-    /*
-    printf("Please enter a message: ");
-    bzero(buffer,256); //vynulovanie buffera
-    fgets(buffer, 255, stdin); //zapisanie napisanej spravy pouzivatelom do buffera
 
-    n = write(sockfd, buffer, strlen(buffer)); //zapiasnie spravy na server(odoslanie)
-    if (n < 0)
-    {
-        perror("Error writing to socket");
-        return 5;
-    }
-
-    bzero(buffer,256); //vynulovanie klientovho buffera
-    n = read(sockfd, buffer, 255); //precitanie spravy zo servera
-    if (n < 0)
-    {
-        perror("Error reading from socket");
-        return 6;
-    }
-     printf("%s\n",buffer);
-     */
     //inicializacia dat zdielanych medzi vlaknami
     DATA data;
     data_init(&data, sockfd);
