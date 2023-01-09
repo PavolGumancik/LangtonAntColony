@@ -88,7 +88,14 @@
     <ClInclude Include="integerCheck.h" />
     <ClInclude Include="outputManager.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemGroup>
+    <Text Include="antPattern.txt" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalOptions>-pthread</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

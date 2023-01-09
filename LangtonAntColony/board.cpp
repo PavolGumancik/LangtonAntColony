@@ -9,14 +9,11 @@ using std::endl;
 //+ creation of array of flags
 //DIRECTIONS: 1 = UP, 2 = DOWN, 3 = LEFT, 4 = RIGHT
 Board::Board(int x, int y, int logic, int totalAnts, pthread_mutex_t *mutexT, pthread_cond_t *condAnts)
-    :collisionLogic(logic), numberOfAnts(totalAnts)
-{
+    :collisionLogic(logic), numberOfAnts(totalAnts), rowSize(x), colSize(y), antId(0)
+{  
+    //type of logic - decision at collision
     //1 = extinction; 2 = solely survivor; 3 = add-on logic (inverse logic)
-    /*const int collisionLogic = logic;
-    const int numberOfAnts = totalAnts;*/
-    int rowSize = x;
-    int colSize = y;
-	
+    
 	pthread_mutex_t* mutex = mutexT;
 	pthread_cond_t* cond_ants = condAnts;
 
@@ -28,7 +25,6 @@ Board::Board(int x, int y, int logic, int totalAnts, pthread_mutex_t *mutexT, pt
 //returns column size
 int Board::getColSize()
 {
-    cout << colSize << endl;
     return colSize;
 }
 
@@ -97,5 +93,84 @@ void Board::startupSet()
                 colourBoard[i][j] = '#';
             }
         }
+    }
+}
+
+int Board::getLogic()
+{
+    return Board::collisionLogic;
+}
+
+bool Board::getChange(int x, int y, int id)
+{
+    return changeBoard[x][y][id];
+}
+
+int Board::getNumOfAnts()
+{
+    return Board::numberOfAnts;
+}
+
+
+int Board::getNumOfAntsTile(int xcoord, int ycoord)
+{
+    int cnt = 0;
+    for (int i = 0; i < getNumOfAnts(); i++)
+    {
+        if (antsBoard[xcoord][ycoord][i] == true) {
+            cnt++;
+        }
+    }
+    return cnt;
+}
+
+void Board::setChange(int xcoord, int ycoord, int id)
+{
+    if (collisionLogic == 2)
+    {
+        changeBoard[xcoord][ycoord][id] = true;
+    }
+    else if (collisionLogic == 3)
+    {
+        int cnt = 0;
+        int i = 0;
+        while (cnt < getNumOfAntsTile(xcoord, ycoord)/2)
+        {
+            changeBoard[xcoord][ycoord][i] = true;
+            i++;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < getNumOfAnts(); i++)
+        {
+            if (changeBoard[xcoord][ycoord][i]) {
+                changeBoard[xcoord][ycoord][i] = true;
+            }
+        }
+    }
+    
+}
+
+int Board::getAntId()
+{
+    return Board::antId;
+}
+
+void Board::incrementAntId()
+{
+    antId++;
+}
+
+void Board::placeAnt(bool set, int x, int y, int antId)
+{
+    if (set)
+    {
+        antsBoard[x][y][antId] = true;
+    }
+    else
+    {
+        antsBoard[x][y][antId] = false;
+        changeBoard[x][y][antId] = false;
     }
 }

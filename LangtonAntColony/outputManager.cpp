@@ -7,6 +7,7 @@ using namespace std;
 using std::cout;
 using std::endl;
 
+//send ant's world on stdout
 void printCmd(Board *b)
 {
 	//int variables to hold the ants coordinates and
@@ -29,20 +30,24 @@ void printCmd(Board *b)
 	}
 }
 
+//send output to given file
 void fileOutput(Board* b)
 {
 	int rowSize = b->getRowSize();
 	int colSize = b->getColSize();
-
-	ofstream myfile;
-	myfile.open("antPattern.txt");
-	for (int i = 0; i < rowSize; i++)
+	
+	ofstream myfile("antPattern.txt");
+	if (myfile.is_open())
 	{
-		for (int j = 0; j < colSize; j++)
+		for (int i = 0; i < rowSize; i++)
 		{
-			myfile << b->getColor(i, j);
+			for (int j = 0; j < colSize; j++)
+			{
+				myfile << b->getColor(i, j);
+			}
+			myfile << endl;
 		}
-		cout << endl;
+		myfile.close();
 	}
-	myfile.close();
+	else cout << "Unable to open file";
 }
